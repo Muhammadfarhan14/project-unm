@@ -87,6 +87,15 @@ document.getElementById('formTambahMeja').addEventListener('submit', function(ev
             width: 40px;
             height: 35px;
         }
+
+        .status {
+      background: #e3f7fc;
+      color: #007bff;
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
     </style>
 </head>
 
@@ -125,7 +134,7 @@ document.getElementById('formTambahMeja').addEventListener('submit', function(ev
 
         <!-- Page Content -->
         <div id="page-content-wrapper" class="w-100">
-           <nav class="navbar navbar-light bg-white border-bottom justify-content-between px-4 py-3">
+          <nav class="navbar navbar-light bg-white border-bottom justify-content-between px-4 py-3">
                 <input class="form-control w-50" type="search" placeholder="Type to search..." aria-label="Search" />
                 <div class="d-flex align-items-center">
               <i class="fa-solid fa-user-circle fa-2x"></i>    
@@ -135,57 +144,52 @@ document.getElementById('formTambahMeja').addEventListener('submit', function(ev
 
             <div class="container-fluid px-4 py-4">
 
-                <!-- Tombol Tambah List Meja -->
-                <div class="mb-4">
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahMeja">
-                        <i class="fas fa-plus"></i> Tambah List Meja
-                    </button>
-                </div>
+                 <!-- Content -->
+  <div class="content">
+    <h3>Pesanan Baru</h3>
+    <div class="card p-3">
+      <table id="pesananTable" class="table table-striped">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nomor Meja</th>
+            <th>Total Belanja</th>
+            <th>Jenis Pembayaran</th>
+            <th>Detail</th>
+            <th>Status</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Meja Nomor 02</td>
+            <td>Rp. 22.000</td>
+            <td>Cash</td>
+            <td>
+              • Nasi Goreng (x2)<br>
+              • Es Teh (x1)
+            </td>
+            <td><span class="status">BUTUH KONFIRMASI</span></td>
+            <td>
+              <button class="btn btn-primary btn-sm">✔</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-                <!-- Modal Tambah Meja -->
-                <div class="modal fade" id="modalTambahMeja" tabindex="-1" aria-labelledby="modalTambahMejaLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
+  <!-- Script -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#pesananTable').DataTable();
+    });
+  </script>
 
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalTambahMejaLabel">Tambah Meja</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-
-                            <div class="modal-body">
-                                <form id="formTambahMeja">
-                                    <div class="mb-3">
-                                        <label for="nomorMeja" class="form-label">Nomor Meja</label>
-                                        <input type="text" class="form-control" id="nomorMeja" placeholder="Contoh 01"
-                                            required>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" form="formTambahMeja" class="btn btn-primary">Tambah</button>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Kartu QR Meja -->
-                <div class="card shadow-sm p-3" style="width: 250px;">
-                    <div class="d-flex justify-content-center">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://contoh-link/meja01&size=200x200"
-                            alt="QR Meja" class="img-fluid">
-                    </div>
-                    <p class="text-center text-danger fw-semibold mt-2">Meja 01</p>
-                    <div class="d-flex justify-content-around mt-3">
-                        <button class="btn btn-sm btn-info text-white"><i class="fas fa-download"></i></button>
-                        <button class="btn btn-sm btn-primary"><i class="fas fa-link"></i></button>
-                        <button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                </div>
 
             </div>
         </div>
