@@ -61,7 +61,42 @@
     .note-input{border:0;border-bottom:1px solid #ddd;width:100%;outline:none;font-size:.9rem;padding:6px 0;}
     .summary-row{display:flex;justify-content:space-between;padding:4px 0;font-weight:600;}
     .checkout-btn{background:var(--primary-red);color:#fff;font-weight:600;border:none;border-radius:34px;padding:16px 0;font-size:1.1rem;margin-top:18px;width:100%;}
-  </style>
+
+  .floating-buttons {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .floating-button {
+      background-color: orange;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: white;
+      position: relative;
+    }
+
+    .floating-button::after {
+      content: '0';
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      background-color: red;
+      width: 18px;
+      height: 18px;
+      font-size: 12px;
+      border-radius: 50%;
+      text-align: center;
+    }
+</style>
 </head>
 <body class="dim-when-modal">
 
@@ -72,8 +107,7 @@
         <a class="nav-link" href="#">BERANDA</a>
         <a class="nav-link" href="#">TENTANG</a>
       </div>
-      <a class="navbar-brand mx-auto" href="#"><img src="https://dummyimage.com/100x40/000/fff&text=BOTHLAM+SPACE" height="40" alt="Logo"/></a>
-      <span class="icon-search"><i class="fa-solid fa-magnifying-glass"></i></span>
+      <a class="navbar-brand" href="#">Ashbab Coffe<img src="LOGO ASHBAB.jpg" height="40" alt="Logo"/></a>
     </div>
   </nav>
 
@@ -85,9 +119,8 @@
   <!-- ===== CATEGORY PILLS ===== -->
   <div class="container">
     <ul class="nav nav-pills justify-content-center nav-category mb-4 gap-3 flex-nowrap overflow-auto">
-      <li class="nav-item"><a class="nav-link active" href="#">COFFEE</a></li>
+      <li class="nav-item"><a class="nav-link active" href="#">MINUMAN</a></li>
       <li class="nav-item"><a class="nav-link" href="#">MAKANAN</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">NON COFFEE</a></li>
     </ul>
   </div>
 
@@ -235,5 +268,12 @@
       document.getElementById('totalDisplay').textContent=`Rp ${subtotal.toLocaleString('id-ID')}`;
     }
   </script>
+    <!-- Floating Buttons -->
+  <div class="floating-buttons">
+  <a href="popup.html" title="Pesanan">
+    <div class="floating-button">🧾</div>
+  </a>
+</div>
+  
 </body>
 </html>

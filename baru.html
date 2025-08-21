@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pesanan Saya</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #5b2b2b;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .modal {
+      background: #a05d5d;
+      border-radius: 8px;
+      width: 350px;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    }
+
+    .modal-header {
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .dropdown {
+      background: #8d4e4e;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    .dropdown-header {
+      padding: 10px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+    }
+
+    .dropdown-header:hover {
+      background: #7a4040;
+    }
+
+    .dropdown-content {
+      display: none;
+      padding: 10px;
+      border-top: 1px solid #7a4040;
+    }
+
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      margin: 5px 0;
+    }
+
+    .status {
+      background: #1dc6d6;
+      color: #000;
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      margin: 5px 0;
+    }
+
+    .note {
+      font-size: 12px;
+      color: #ffebeb;
+      margin-top: 8px;
+    }
+
+    .close-btn {
+      background: #555;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .close-btn:hover {
+      background: #333;
+    }
+
+    .arrow {
+      transition: transform 0.3s;
+    }
+    .arrow.open {
+      transform: rotate(180deg);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="modal">
+    <div class="modal-header">
+      <span>Pesanan Saya</span>
+      <span>✖</span>
+    </div>
+
+    <!-- Pesanan 1 -->
+    <div class="dropdown">
+      <div class="dropdown-header" onclick="toggleDropdown(this)">
+        <span>Pesanan 1</span>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="dropdown-content">
+        <div class="order-item"><span>Nasi Goreng</span> <span>10.000 x 2 = 20.000</span></div>
+        <div class="order-item"><span>Es Teh</span> <span>2.000 x 1 = 2.000</span></div>
+        <p>Status: <span class="status">Makanan sedang dimasak</span></p>
+        <p>Total Bayar: Rp. 22.000</p>
+        <p>Jenis Pembayaran: Cash</p>
+        <p>Tanggal Pesanan: 05/06/2024</p>
+      </div>
+    </div>
+
+    <p class="note">*Refresh halaman untuk melihat progress pesanan</p>
+    <button class="close-btn">Tutup</button>
+  </div>
+
+  <script>
+    function toggleDropdown(element) {
+      const content = element.nextElementSibling;
+      const arrow = element.querySelector(".arrow");
+      if (content.style.display === "block") {
+        content.style.display = "none";
+        arrow.classList.remove("open");
+      } else {
+        content.style.display = "block";
+        arrow.classList.add("open");
+      }
+    }
+  </script>
+
+</body>
+</html>
