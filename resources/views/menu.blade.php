@@ -331,8 +331,7 @@
                 <a class="nav-link" href="#">BERANDA</a>
                 <a class="nav-link" href="#">TENTANG</a>
             </div>
-            <a class="navbar-brand mx-auto" href="#"><img src="https://dummyimage.com/100x40/000/fff&text=BOTHLAM+SPACE" height="40" alt="Logo" /></a>
-            <span class="icon-search"><i class="fa-solid fa-magnifying-glass"></i></span>
+            <a class="navbar-brand mx-auto" href="#">Ashbab Coffe</a>
         </div>
     </nav>
 
@@ -340,7 +339,7 @@
     <div class="container my-4 text-center" id="location" data-meja-id="{{ $meja->id }}">
         <span class="location-pill">
             <i class="fa-solid fa-map-pin"></i>
-            BOTHLAM SPACE BOTLEM • DENAH {{ $meja->denah ?? '-' }} • MEJA {{ $meja->nomorMeja }}
+            ASHBAB COFFE • MEJA {{ $meja->nomorMeja }}
         </span>
     </div>
 
@@ -350,7 +349,7 @@
         <ul class="nav nav-pills justify-content-center nav-category mb-4 gap-3 flex-nowrap overflow-auto">
             <li class="nav-item">
                 <a class="nav-link {{ $kategori == 'COFFEE' ? 'active' : '' }}"
-                    href="{{ route('order.meja', [$meja->id, 'COFFEE']) }}">COFFEE</a>
+                    href="{{ route('order.meja', [$meja->id, 'COFFEE']) }}">MINUMAN</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ $kategori == 'MAKANAN' ? 'active' : '' }}"
@@ -375,7 +374,7 @@
                             data-name="{{ $menu->nama }}"
                             data-price="{{ $menu->harga }}"
                             data-kategori="{{ $kategori }}">
-                            <i class="fa-solid fa-bag-shopping"></i> TAMBAH
+                            <i class="fa-solid fa-bag-shopping"></i> tambah
                         </button>
                     </div>
                 </div>
