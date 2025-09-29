@@ -14,6 +14,7 @@ class Minuman extends Model
         'namaMinuman',
         'hargaMinuman',
         'stokMinuman',
-        'fotoMinuman'
+        'fotoMinuman',
+        'model3D',
     ];
 }

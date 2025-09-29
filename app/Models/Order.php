@@ -16,6 +16,7 @@ class Order extends Model
         'harga',
         'jumlah',
         'catatan',
+        "payment_method",
         'status'
     ];
 }

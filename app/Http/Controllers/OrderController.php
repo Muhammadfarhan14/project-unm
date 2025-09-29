@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bank;
 use App\Models\Makanan;
 use App\Models\Meja;
 use App\Models\Minuman;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -30,28 +32,34 @@ class OrderController extends Controller
         {
             return [
                 'id' => $item->id,
-                'nama' => $jenis === 'MAKANAN' ? $item->namaMakanan : $item->namaMinuman,
-                'harga' => $jenis === 'MAKANAN' ? $item->hargaMakanan : $item->hargaMinuman,
-                'stok' => $jenis === 'MAKANAN' ? $item->stokMakanan : $item->stokMinuman,
-                'foto' => $jenis === 'MAKANAN' ? $item->fotoMakanan : $item->fotoMinuman,
+                'nama' => $jenis === 'makanan' ? $item->namaMakanan : $item->namaMinuman,
+                'harga' => $jenis === 'makanan' ? $item->hargaMakanan : $item->hargaMinuman,
+                'stok' => $jenis === 'makanan' ? $item->stokMakanan : $item->stokMinuman,
+                'foto' => $jenis === 'makanan' ? $item->fotoMakanan : $item->fotoMinuman,
+                'model3D' => $item->model3D
             ];
         }
 
-        if ($kategori === 'MAKANAN') {
-            $items = Makanan::all()->map(fn($m) => (object) formatItem($m, 'MAKANAN'));
-        } elseif ($kategori === 'COFFEE') {
-            $items = Minuman::all()->map(fn($m) => (object) formatItem($m, 'COFFEE'));
+        if ($kategori === 'makanan') {
+            $items = Makanan::all()->map(fn($m) => (object) formatItem($m, 'makanan'));
+        } elseif ($kategori === 'minuman') {
+            $items = Minuman::all()->map(fn($m) => (object) formatItem($m, 'minuman'));
         } else {
             $items = collect();
         }
 
+        Log::info($items);
 
-        return view('menu', compact('meja', 'items', 'kategori'));
+        $banks = Bank::all();
+
+
+        return view('menu', compact('meja', 'items', 'kategori', 'banks'));
     }
 
     public function checkout(Request $request, $meja_id)
     {
         $cart = $request->input('cart'); // array dari frontend
+        $payment = $request->input('payment'); // array dari frontend
 
         if (empty($cart)) {
             return back()->with('error', 'Keranjang kosong!');
@@ -59,6 +67,8 @@ class OrderController extends Controller
 
         $orderKey = Str::uuid(); // ID unik per transaksi
         $antrian  = $this->generateQueueNumber();
+
+        Log::info($payment);
 
         foreach ($cart as $item) {
             Order::create([
@@ -69,6 +79,7 @@ class OrderController extends Controller
                 'harga'     => $item['price'],
                 'jumlah'    => $item['qty'],
                 'catatan'   => $item['note'] ?? null,
+                "payment_method" => $payment ?? null,
                 'status'    => 'pending'
             ]);
         }
@@ -160,6 +171,44 @@ class OrderController extends Controller
         return view('order.baru', compact('orders'));
     }
 
+    public function rekap(Request $request)
+    {
+        $jenis = $request->get('jenis', 'harian'); // default harian
+        $tanggal = $request->get('tanggal', date('Y-m-d'));
+
+        Log::info($jenis);
+
+        // Query dasar
+        $query = Order::where('status', 'finished');
+
+        // Filter berdasarkan jenis rekap
+        if ($jenis === 'harian') {
+            $query->whereDate('created_at', now()->toDateString());
+        } elseif ($jenis === 'bulanan') {
+            $query->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year);
+        } elseif ($jenis === 'tanggal') {
+            $query->whereDate('created_at', $tanggal);
+        }
+
+        // Ambil data & grup berdasarkan order_key
+        $rows = $query->orderBy('created_at', 'desc')->get();
+
+        Log::info($rows);
+
+        $orders = $rows->groupBy('order_key')->map(function ($group) {
+            return (object)[
+                'meja_id'       => $group->first()->meja_id,
+                'total_belanja' => $group->sum(fn($item) => $item->harga * $item->jumlah),
+                'detail'        => $group->map(function ($item) {
+                    return $item->nama . ' (' . $item->jumlah . 'x)';
+                })->implode(', '),
+            ];
+        })->values();
+
+        return view('order.rekap', compact('orders'));
+    }
+
     public function konfirmasiPesanan($order_key)
     {
         // Ambil salah satu order (cukup first karena sama-sama 1 order_key)
@@ -199,38 +248,38 @@ class OrderController extends Controller
         return redirect()->back()->with('success', 'Pesanan dibatalkan.');
     }
 
-    public function rekap(Request $request)
-    {
-        // filter tanggal / jenis kalau perlu
-        $tanggal = $request->get('tanggal', date('Y-m-d'));
-        $jenis   = $request->get('jenis', 'harian');
+    // public function rekap(Request $request)
+    // {
+    //     // filter tanggal / jenis kalau perlu
+    //     $tanggal = $request->get('tanggal', date('Y-m-d'));
+    //     $jenis   = $request->get('jenis', 'harian');
 
-        // data dummy
-        $orders = [
-            (object)[
-                'id' => 1,
-                'meja' => (object)['nomorMeja' => '02'],
-                'total' => 22000,
-                'payment_method' => 'cash',
-                'items' => [
-                    (object)['nama' => 'Nasi Goreng', 'pivot' => (object)['qty' => 2]],
-                    (object)['nama' => 'Es Teh', 'pivot' => (object)['qty' => 1]],
-                ]
-            ],
-            (object)[
-                'id' => 2,
-                'meja' => (object)['nomorMeja' => '05'],
-                'total' => 45000,
-                'payment_method' => 'qris',
-                'items' => [
-                    (object)['nama' => 'Mie Ayam', 'pivot' => (object)['qty' => 1]],
-                    (object)['nama' => 'Jus Alpukat', 'pivot' => (object)['qty' => 2]],
-                ]
-            ],
-        ];
+    //     // data dummy
+    //     $orders = [
+    //         (object)[
+    //             'id' => 1,
+    //             'meja' => (object)['nomorMeja' => '02'],
+    //             'total' => 22000,
+    //             'payment_method' => 'cash',
+    //             'items' => [
+    //                 (object)['nama' => 'Nasi Goreng', 'pivot' => (object)['qty' => 2]],
+    //                 (object)['nama' => 'Es Teh', 'pivot' => (object)['qty' => 1]],
+    //             ]
+    //         ],
+    //         (object)[
+    //             'id' => 2,
+    //             'meja' => (object)['nomorMeja' => '05'],
+    //             'total' => 45000,
+    //             'payment_method' => 'qris',
+    //             'items' => [
+    //                 (object)['nama' => 'Mie Ayam', 'pivot' => (object)['qty' => 1]],
+    //                 (object)['nama' => 'Jus Alpukat', 'pivot' => (object)['qty' => 2]],
+    //             ]
+    //         ],
+    //     ];
 
-        return view('order.rekap', compact('orders', 'tanggal', 'jenis'));
-    }
+    //     return view('order.rekap', compact('orders', 'tanggal', 'jenis'));
+    // }
 
     public function orderMe($meja_id)
     {

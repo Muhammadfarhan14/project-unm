@@ -23,6 +23,7 @@ class MinumanController extends Controller
             'hargaMinuman' => 'required|numeric',
             'stokMinuman' => 'required|integer|min:0',
             'fotoMinuman' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'model3D'      => 'nullable|file|max:10240'
         ]);
 
         try {
@@ -30,6 +31,15 @@ class MinumanController extends Controller
 
             if ($request->hasFile('fotoMinuman')) {
                 $data['fotoMinuman'] = $request->file('fotoMinuman')->store('minuman', 'public');
+            }
+
+            if ($request->hasFile('model3D')) {
+                $ext = strtolower($request->file('model3D')->getClientOriginalExtension());
+                if (!in_array($ext, ['glb', 'gltf'])) {
+                    return back()->withErrors(['model3D' => 'File 3D harus berformat .glb atau .gltf']);
+                }
+
+                $data['model3D'] = $request->file('model3D')->store('minuman_3d', 'public');
             }
 
             Minuman::create($data);
@@ -48,6 +58,7 @@ class MinumanController extends Controller
             'hargaMinuman' => 'required|numeric',
             'stokMinuman' => 'required|integer|min:0',
             'fotoMinuman' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'model3D'      => 'nullable|file|max:10240'
         ]);
 
         $data = $request->only(['namaMinuman', 'hargaMinuman', 'stokMinuman']);
@@ -57,6 +68,19 @@ class MinumanController extends Controller
                 Storage::disk('public')->delete($minuman->fotoMinuman);
             }
             $data['fotoMinuman'] = $request->file('fotoMinuman')->store('minuman', 'public');
+        }
+
+        if ($request->hasFile('model3D')) {
+            $ext = strtolower($request->file('model3D')->getClientOriginalExtension());
+            if (!in_array($ext, ['glb', 'gltf'])) {
+                return back()->withErrors(['model3D' => 'File 3D harus berformat .glb atau .gltf']);
+            }
+
+            if ($minuman->modelZ3D) {
+                Storage::disk('public')->delete($minuman->model3D);
+            }
+
+            $data['model3D'] = $request->file('model3D')->store('minuman_3d', 'public');
         }
 
         $minuman->update($data);

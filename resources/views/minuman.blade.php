@@ -65,6 +65,15 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+
+                        <div class="mb-3">
+                            <label for="model3D" class="form-label">Model 3D (opsional)</label>
+                            <input type="file" class="form-control @error('model3D') is-invalid @enderror"
+                                id="model3D" name="model3D" accept=".glb,.gltf">
+                            @error('model3D')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -114,6 +123,7 @@
                         <th>Harga</th>
                         <th>Stok</th>
                         <th>Foto</th>
+                        <th>Model 3D</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -127,21 +137,51 @@
                         <td>
                             <img src="{{ asset('storage/'.$minuman->fotoMinuman) }}" alt="{{ $minuman->namaMinuman }}" width="60">
                         </td>
-                        <td>
-                            <!-- Tombol Edit -->
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $minuman->id }}">
-                                Edit
-                            </button>
+                        <td class="text-center align-middle" style="width: 120px;">
+                            @if ($minuman->model3D)
+                            <model-viewer src="{{ asset('storage/'.$minuman->model3D) }}"
+                                alt="{{ $minuman->namaMinuman }}"
+                                camera-controls auto-rotate
+                                style="width: 60px; height: 60px; margin: auto; display: block;">
+                            </model-viewer>
+                            @else
+                            <small>Tidak ada model</small>
+                            @endif
+                        </td>
+                        <td class="text-center align-middle" style="width: 140px;">
+                            <div class="d-flex justify-content-center gap-2">
+                                <!-- Tombol Edit -->
+                                <button class="btn btn-warning btn-sm w-100" style="min-width: 60px;" data-bs-toggle="modal"
+                                    data-bs-target="#editModal{{ $minuman->id }}">
+                                    Edit
+                                </button>
 
-                            <!-- Tombol Delete -->
-                            <form action="{{ route('minuman.destroy', $minuman->id) }}" method="POST" style="display:inline-block;">
+                                <!-- Tombol Delete -->
+                                <form action="{{ route('minuman.destroy', $minuman->id) }}" method="POST" style="width: 100%;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm w-100" style="min-width: 60px;"
+                                        onclick="return confirm('Yakin ingin menghapus?')">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                        <!-- <td> -->
+                        <!-- Tombol Edit -->
+                        <!-- <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ $minuman->id }}">
+                                Edit
+                            </button> -->
+
+                        <!-- Tombol Delete -->
+                        <!-- <form action="{{ route('minuman.destroy', $minuman->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus?')">
                                     Hapus
                                 </button>
-                            </form>
-                        </td>
+                            </form> -->
+                        <!-- </td> -->
                     </tr>
 
                     <!-- Modal Edit -->
@@ -177,6 +217,26 @@
                                             <input type="file" class="form-control" name="fotoMinuman" accept="image/*">
                                             <small>Foto sekarang:</small><br>
                                             <img src="{{ asset('storage/'.$minuman->fotoMinuman) }}" width="80">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="model3D" class="form-label">Model 3D (opsional)</label>
+                                            <input type="file" class="form-control @error('model3D') is-invalid @enderror"
+                                                id="model3D" name="model3D" accept=".glb,.gltf">
+
+                                            <small>Model 3D sekarang:</small><br>
+                                            @if ($minuman->model3D)
+                                            <model-viewer src="{{ asset('storage/'.$minuman->model3D) }}"
+                                                camera-controls auto-rotate
+                                                style="width: 60px; height: 60px; margin: auto; display: block;">
+                                            </model-viewer>
+                                            @else
+                                            <small>Tidak ada model</small>
+                                            @endif
+
+                                            @error('model3D')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
 
                                     </div>

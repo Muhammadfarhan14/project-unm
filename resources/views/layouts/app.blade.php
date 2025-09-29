@@ -7,14 +7,56 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
+        html,
         body {
             font-family: "Segoe UI", sans-serif;
             background-color: #f5f7fa;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            /* biar body ga scroll, tapi content wrapper aja */
         }
 
+        #wrapper {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
         .sidebar {
             width: 220px;
-            min-height: 100vh;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            background-color: #fff;
+            border-right: 1px solid #ddd;
+        }
+
+        /* Area konten kanan */
+        #page-content-wrapper {
+            margin-left: 220px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Navbar atas */
+        .navbar {
+            flex-shrink: 0;
+            height: 60px;
+            background: white;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Area isi utama yang bisa discroll */
+        .content-wrapper {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            background-color: #f5f7fa;
         }
 
         .card {
@@ -51,14 +93,11 @@
 <body>
     <div class="d-flex" id="wrapper">
         <!-- Sidebar -->
-        <div class="bg-light border-end sidebar" id="sidebar-wrapper">
+        <div class="bg-light sidebar" id="sidebar-wrapper">
             <div class="sidebar-heading text-primary fw-bold p-3">Admin</div>
             <div class="list-group list-group-flush">
-
                 <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action"><i class="fas fa-home me-2"></i>Dashboard</a>
-
                 <a href="{{ route('order.baru') }}" class="list-group-item list-group-item-action"><i class="fas fa-cart-plus me-2"></i>Pesanan Baru</a>
-
                 <a href="{{ route('order.rekap') }}" class="list-group-item list-group-item-action"><i class="fas fa-receipt me-2"></i>Rekap Pesanan</a>
 
                 <!-- Dropdown Menu -->
@@ -70,13 +109,12 @@
                 </a>
 
                 <div class="collapse ps-4" id="menuCollapse">
-                    <a href="{{ route('makanan.index') }}" class=" list-group-item list-group-item-action border-0 bg-transparent"><i class="fas fa-utensils me-2"></i>Makanan</a>
-
+                    <a href="{{ route('makanan.index') }}" class="list-group-item list-group-item-action border-0 bg-transparent"><i class="fas fa-utensils me-2"></i>Makanan</a>
                     <a href="{{ route('minuman.index') }}" class="list-group-item list-group-item-action border-0 bg-transparent"><i class="fas fa-coffee me-2"></i>Minuman</a>
                 </div>
 
                 <a href="{{ route('meja.index') }}" class="list-group-item list-group-item-action"><i class="fas fa-chair me-2"></i>List Meja</a>
-                <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-university me-2"></i>List Bank</a>
+                <a href="{{ route('bank.index') }}" class="list-group-item list-group-item-action"><i class="fas fa-university me-2"></i>List Bank</a>
 
                 <!-- Logout -->
                 <form action="{{ route('logout') }}" method="POST" class="mt-3">
@@ -90,7 +128,7 @@
 
         <!-- Page Content -->
         <div id="page-content-wrapper" class="w-100">
-            <nav class="navbar navbar-light bg-white border-bottom justify-content-between px-4 py-3">
+            <nav class="navbar navbar-light bg-white border-bottom justify-content-between px-4">
                 <input class="form-control w-50" type="search" placeholder="Type to search..." aria-label="Search" />
                 <div class="d-flex align-items-center">
                     <img src="https://via.placeholder.com/40" class="rounded-circle" alt="Admin" width="40" height="40" />
@@ -98,13 +136,14 @@
                 </div>
             </nav>
 
-            <div class="container-fluid px-4 py-4">
+            <!-- Bagian yang bisa discroll -->
+            <div class="content-wrapper">
                 @yield('content')
             </div>
-
         </div>
     </div>
 
+    <!-- Script -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- DataTables CSS -->
@@ -128,6 +167,10 @@
     <!-- pdfmake (wajib untuk PDF) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+    @stack('scripts')
 </body>
 
 </html>

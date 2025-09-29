@@ -14,5 +14,6 @@ class Makanan extends Model
         'hargaMakanan',
         'stokMakanan',
         'fotoMakanan',
+        'model3D',
     ];
 }

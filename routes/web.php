@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BankController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MakananController;
 use App\Http\Controllers\MejaController;
@@ -21,6 +22,13 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/order/meja/{meja:nomorMeja}/{kategori?}', [OrderController::class, 'create'])
+    ->name('order.meja');
+
+Route::post('/order/checkout/{meja:nomorMeja}', [OrderController::class, 'checkout'])->name('order.checkout');
+
+Route::get('/order/me/{meja_id}', [OrderController::class, 'orderMe']);
+
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -32,12 +40,8 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('meja', MejaController::class)->except(['show', 'create', 'edit']);
 
-    // Route::get('/order/meja/{nomor}', [OrderController::class, 'index'])->name('order.meja');
+    Route::resource('bank', BankController::class);
 
-    Route::get('/order/meja/{meja}/{kategori?}', [OrderController::class, 'create'])
-        ->name('order.meja');
-
-    Route::post('/order/checkout/{meja}', [OrderController::class, 'checkout'])->name('order.checkout');
 
     Route::get('/order/baru', [OrderController::class, 'orderBaru'])
         ->name('order.baru');
@@ -47,6 +51,4 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/order/{order_key}/update-status', [OrderController::class, 'konfirmasiPesanan'])->name('order.updateStatus');
     Route::post('/order/{order_key}/batal', [OrderController::class, 'batalPesanan'])->name('order.batal');
-
-    Route::get('/order/me/{meja_id}', [OrderController::class, 'orderMe']);
 });

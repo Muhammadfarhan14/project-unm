@@ -48,7 +48,10 @@
                     <a href="{{ asset('storage/' . $meja->qrCode) }}" class="btn btn-sm btn-info text-white" download>
                         <i class="fas fa-download"></i>
                     </a>
-                    <a href="{{ url("/order/meja/{$meja->nomorMeja}") }}" class="btn btn-sm btn-primary">
+                    <!-- <a href="{{ url("http://10.223.205.225:8000/order/meja/{$meja->nomorMeja}/minuman") }}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-link"></i>
+                    </a> -->
+                    <a href="{{ url("/order/meja/{$meja->nomorMeja}/minuman") }}" class="btn btn-sm btn-primary">
                         <i class="fas fa-link"></i>
                     </a>
                     <form action="{{ route('meja.destroy', $meja->id) }}" method="POST">

@@ -258,6 +258,69 @@
             background: var(--primary-red);
         }
 
+        .card-3d {
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .card-inner.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            top: 0;
+            left: 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .card-front {
+            z-index: 2;
+            transform: rotateY(0deg);
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background-color: #fff;
+            position: relative;
+        }
+
+        .card-back model-viewer {
+            width: 100%;
+            height: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            z-index: 1;
+            /* di bawah tombol */
+            position: relative;
+        }
+
+        .btn-flip-back {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 5;
+            /* pastikan lebih besar dari model-viewer */
+            background: rgba(255, 255, 255, 0.85);
+            border: none;
+            padding: 6px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
         .note-input {
             border: 0;
             border-bottom: 1px solid #ddd;
@@ -348,25 +411,45 @@
     <div class="container">
         <ul class="nav nav-pills justify-content-center nav-category mb-4 gap-3 flex-nowrap overflow-auto">
             <li class="nav-item">
-                <a class="nav-link {{ $kategori == 'COFFEE' ? 'active' : '' }}"
-                    href="{{ route('order.meja', [$meja->id, 'COFFEE']) }}">MINUMAN</a>
+                <a class="nav-link {{ $kategori == 'minuman' ? 'active' : '' }}"
+                    href="{{ route('order.meja', [$meja->nomorMeja, 'minuman']) }}">MINUMAN</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ $kategori == 'MAKANAN' ? 'active' : '' }}"
-                    href="{{ route('order.meja', [$meja->id, 'MAKANAN']) }}">MAKANAN</a>
+                <a class="nav-link {{ $kategori == 'makanan' ? 'active' : '' }}"
+                    href="{{ route('order.meja', [$meja->nomorMeja, 'makanan']) }}">MAKANAN</a>
             </li>
         </ul>
     </div>
 
-    <!-- ===== MENU GRID ===== -->
     <div class="container">
         <div class="row g-4">
             @foreach($items as $menu)
             <div class="col-6 col-md-4 col-lg-2">
-                <div class="card card-menu text-center h-100 p-3">
-                    <img src="{{ asset('storage/'.$menu->foto) ?? 'https://dummyimage.com/200x200/f4dfe3/ffffff&text=🍹' }}"
-                        class="card-img-top"
-                        alt="{{ $menu->nama }}" />
+                <div class="card card-menu text-center h-100 p-3 card-3d">
+                    <div class="card-inner" onclick="flipCard(this)">
+                        <!-- Sisi Depan -->
+                        <div class="card-front">
+                            <img src="{{ asset('storage/'.$menu->foto) ?? 'https://dummyimage.com/200x200/f4dfe3/ffffff&text=🍹' }}"
+                                class="card-img-top"
+                                alt="{{ $menu->nama }}" />
+                        </div>
+
+                        <!-- Sisi Belakang -->
+                        <div class="card-back">
+                            <button class="btn-flip-back"
+                                onclick="event.stopPropagation(); flipCard(this.closest('.card-inner'));"
+                                aria-label="kembali">⟲</button>
+
+                            <model-viewer src="{{ asset('storage/'.$menu->model3D) }}"
+                                alt="{{ $menu->nama }} 3D"
+                                camera-controls
+                                auto-rotate
+                                rotation-per-second="20deg"
+                                disable-zoom>
+                            </model-viewer>
+                        </div>
+                    </div>
+
                     <div class="card-body d-flex flex-column justify-content-between">
                         <h6 class="card-title text-danger fw-bold mb-1">{{ $menu->nama }}</h6>
                         <p class="mb-3">{{ number_format($menu->harga, 0, ',', '.') }}</p>
@@ -382,6 +465,7 @@
             @endforeach
         </div>
     </div>
+
 
     <!-- ===== ORDER MODAL ===== -->
     <div class="modal fade order-modal" id="orderModal" tabindex="-1" aria-hidden="true">
@@ -418,7 +502,34 @@
                 <div class="px-4 py-3" style="border-top:1px solid #eee;">
                     <div class="summary-row"><span>SUBTOTAL</span><span id="subtotalDisplay">Rp 0</span></div>
                     <div class="summary-row"><span>TOTAL</span><span id="totalDisplay">Rp 0</span></div>
-                    <button class="checkout-btn" id="checkoutBtn">CHECKOUT 1</button>
+
+                    <div class="mb-3">
+                        <label for="paymentMethod" class="form-label fw-bold">Metode Pembayaran</label>
+                        <select class="form-select" id="paymentMethod">
+                            <option value="cash">Cash</option>
+                            <option value="qris">QRIS</option>
+                        </select>
+                    </div>
+
+                    <div id="bankContainer" class="mb-3" style="display:none;">
+                        <label for="bankSelect" class="form-label fw-bold">Pilih Bank / E-Wallet</label>
+                        <select class="form-select" id="bankSelect">
+                            <option value="">-- Pilih Bank --</option>
+                            @foreach($banks as $bank)
+                            <option value="{{ asset('storage/' . $bank->gambar_qris) }}">{{ $bank->nama_bank }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Tampilan QR Code -->
+                    <div id="qrisContainer" class="text-center mt-3" style="display:none;">
+                        <p class="fw-semibold text-danger">Scan QR Code berikut:</p>
+                        <img id="qrisImage" src="" alt="QRIS" style="width:180px; height:180px; border-radius:10px;">
+                    </div>
+
+                    <input type="hidden" name="payment_method" id="paymentMethodInput">
+
+                    <button class="checkout-btn" id="checkoutBtn">CHECKOUT</button>
                 </div>
             </div>
         </div>
@@ -461,7 +572,8 @@
     </div>
 
     <!-- ===== BOOTSTRAP & CORE JS ===== -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <script>
         const orderModalEl = document.getElementById('orderModal');
         const cartModalEl = document.getElementById('cartModal');
@@ -489,6 +601,38 @@
         };
         // let cart = [];
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        const paymentMethod = document.getElementById('paymentMethod');
+        const bankContainer = document.getElementById('bankContainer');
+        const bankSelect = document.getElementById('bankSelect');
+        const qrisContainer = document.getElementById('qrisContainer');
+        const qrisImage = document.getElementById('qrisImage');
+        const paymentMethodInput = document.getElementById('paymentMethodInput');
+
+        paymentMethod.addEventListener('change', function() {
+            if (this.value === 'qris') {
+                bankContainer.style.display = 'block';
+                qrisContainer.style.display = 'none'; // sembunyikan dulu QR
+                paymentMethodInput.value = 'qris';
+            } else {
+                bankContainer.style.display = 'none';
+                qrisContainer.style.display = 'none';
+                paymentMethodInput.value = this.value;
+            }
+        });
+
+        // Saat pilih bank / e-wallet
+        bankSelect.addEventListener('change', function() {
+            const selectedQR = this.value;
+            if (selectedQR) {
+                qrisImage.src = selectedQR;
+                qrisContainer.style.display = 'block';
+                paymentMethodInput.value = 'qris';
+            } else {
+                qrisContainer.style.display = 'none';
+                paymentMethodInput.value = 'cash';
+            }
+        });
 
         function updateFloatingCount() {
             const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
@@ -576,7 +720,8 @@
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     },
                     body: JSON.stringify({
-                        cart
+                        cart,
+                        "payment": paymentMethodInput.value
                     })
                 })
                 .then(res => res.json())
@@ -699,12 +844,35 @@
                 });
         }
 
-
         document.getElementById("floatingOrdersBtn").addEventListener("click", function() {
             var modal = new bootstrap.Modal(document.getElementById('ordersModal'));
             modal.show();
 
             loadPesananSaya();
+        });
+
+        function flipCard(element) {
+            console.log("flipCard dipanggil untuk:", element);
+            element.classList.toggle('is-flipped');
+        }
+
+        document.querySelectorAll('model-viewer').forEach(mv => {
+            mv.addEventListener('mousedown', e => {
+                // kalau klik bukan tombol flip
+                if (!e.target.closest('.btn-flip-back')) e.stopPropagation();
+            });
+            mv.addEventListener('mouseup', e => {
+                if (!e.target.closest('.btn-flip-back')) e.stopPropagation();
+            });
+            mv.addEventListener('click', e => {
+                if (!e.target.closest('.btn-flip-back')) e.stopPropagation();
+            });
+            mv.addEventListener('touchstart', e => {
+                if (!e.target.closest('.btn-flip-back')) e.stopPropagation();
+            });
+            mv.addEventListener('touchend', e => {
+                if (!e.target.closest('.btn-flip-back')) e.stopPropagation();
+            });
         });
     </script>
 </body>

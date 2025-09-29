@@ -32,7 +32,11 @@ class MejaController extends Controller
         ]);
 
         $nomorMeja = $request->nomorMeja;
-        $link = url("/meja/$nomorMeja");
+        // $link = url("/meja/$nomorMeja");
+
+        $host = "10.223.205.225";
+        $port = request()->getPort();
+        $link = "http://$host:$port/order/meja/$nomorMeja/minuman";
 
         // Generate QR code pakai layanan eksternal
         $qrImage = file_get_contents("https://api.qrserver.com/v1/create-qr-code/?data=$link&size=200x200");
