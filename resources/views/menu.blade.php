@@ -29,7 +29,7 @@
 
         /* ===== Navbar ===== */
         .navbar .nav-link {
-            font-weight: 600;
+            font-weight: 500;
             color: #000;
         }
 
@@ -51,7 +51,7 @@
             background: #f4dfe3;
             border: none;
         }
-
+        
         .card-menu img {
             width: 100%;
             height: 140px;
@@ -391,10 +391,12 @@
     <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
         <div class="container-fluid px-4">
             <div class="d-flex gap-4 align-items-center flex-grow-1">
-                <a class="nav-link" href="#">BERANDA</a>
-                <a class="nav-link" href="#">TENTANG</a>
+                <a class="nav-link" href="#">Beranda</a>
+                <a class="nav-link" href="#">Tentang</a>
             </div>
-            <a class="navbar-brand mx-auto" href="#">Ashbab Coffe</a>
+           <a class="navbar-brand mx-auto" href="#">Ashbab Coffe
+                 <img src="{{ asset('storage/logo/logo.png') }}" alt="Ashbab Coffee" height="40">
+             </a>
         </div>
     </nav>
 
@@ -402,7 +404,7 @@
     <div class="container my-4 text-center" id="location" data-meja-id="{{ $meja->id }}">
         <span class="location-pill">
             <i class="fa-solid fa-map-pin"></i>
-            ASHBAB COFFE • MEJA {{ $meja->nomorMeja }}
+            Ashbab Coffe • Meja {{ $meja->nomorMeja }}
         </span>
     </div>
 
@@ -412,11 +414,11 @@
         <ul class="nav nav-pills justify-content-center nav-category mb-4 gap-3 flex-nowrap overflow-auto">
             <li class="nav-item">
                 <a class="nav-link {{ $kategori == 'minuman' ? 'active' : '' }}"
-                    href="{{ route('order.meja', [$meja->nomorMeja, 'minuman']) }}">MINUMAN</a>
+                    href="{{ route('order.meja', [$meja->nomorMeja, 'minuman']) }}">Minuman</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ $kategori == 'makanan' ? 'active' : '' }}"
-                    href="{{ route('order.meja', [$meja->nomorMeja, 'makanan']) }}">MAKANAN</a>
+                    href="{{ route('order.meja', [$meja->nomorMeja, 'makanan']) }}">Makanan</a>
             </li>
         </ul>
     </div>
@@ -457,7 +459,7 @@
                             data-name="{{ $menu->nama }}"
                             data-price="{{ $menu->harga }}"
                             data-kategori="{{ $kategori }}">
-                            <i class="fa-solid fa-bag-shopping"></i> tambah
+                            <i class=""></i> Tambah
                         </button>
                     </div>
                 </div>
@@ -477,13 +479,13 @@
                 </div>
                 <div class="modal-body text-center pb-4">
                     <h4 class="order-title mb-4">Item</h4>
-                    <p class="text-muted mb-1" style="letter-spacing:1px;font-size:.8rem;">JUMLAH</p>
+                    <p class="text-muted mb-1" style="letter-spacing:1px;font-size:.8rem;">Jumlah</p>
                     <div class="d-flex justify-content-center align-items-center gap-4 mb-4">
                         <button class="qty-btn minus" disabled><i class="fa-solid fa-minus"></i></button>
                         <span id="qtyDisplay" style="font-size:1.25rem;font-weight:600;">1</span>
                         <button class="qty-btn plus active"><i class="fa-solid fa-plus"></i></button>
                     </div>
-                    <button class="buy-btn w-100" id="buyBtn">BELI Rp <span id="buyTotal">0</span></button>
+                    <button class="buy-btn w-100" id="buyBtn">Rp <span id="buyTotal">0</span></button>
                 </div>
             </div>
         </div>
@@ -495,13 +497,13 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button class="back-btn" data-bs-dismiss="modal"><i class="fa-solid fa-arrow-left"></i></button>
-                    <h5 class="cart-title">KERANJANG</h5>
-                    <span id="itemCount" class="fw-semibold text-muted" style="font-size:.9rem;">0 BARANG</span>
+                    <h5 class="cart-title">Keranjang</h5>
+                    <span id="itemCount" class="fw-semibold text-muted" style="font-size:.9rem;">0 Barang</span>
                 </div>
                 <div class="cart-body" id="cartItems"><!-- items injected here --></div>
                 <div class="px-4 py-3" style="border-top:1px solid #eee;">
-                    <div class="summary-row"><span>SUBTOTAL</span><span id="subtotalDisplay">Rp 0</span></div>
-                    <div class="summary-row"><span>TOTAL</span><span id="totalDisplay">Rp 0</span></div>
+                    <div class="summary-row"><span>Subtotal</span><span id="subtotalDisplay">Rp 0</span></div>
+                    <div class="summary-row"><span>Total</span><span id="totalDisplay">Rp 0</span></div>
 
                     <div class="mb-3">
                         <label for="paymentMethod" class="form-label fw-bold">Metode Pembayaran</label>
@@ -529,7 +531,7 @@
 
                     <input type="hidden" name="payment_method" id="paymentMethodInput">
 
-                    <button class="checkout-btn" id="checkoutBtn">CHECKOUT</button>
+                    <button class="checkout-btn" id="checkoutBtn">Pesan</button>
                 </div>
             </div>
         </div>

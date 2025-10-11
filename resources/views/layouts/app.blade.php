@@ -129,11 +129,11 @@
         <!-- Page Content -->
         <div id="page-content-wrapper" class="w-100">
             <nav class="navbar navbar-light bg-white border-bottom justify-content-between px-4">
-                <input class="form-control w-50" type="search" placeholder="Type to search..." aria-label="Search" />
-                <div class="d-flex align-items-center">
-                    <img src="https://via.placeholder.com/40" class="rounded-circle" alt="Admin" width="40" height="40" />
-                    <span class="ms-2 fw-bold">Admin Kasir</span>
-                </div>
+               
+<div class="d-flex w-100">
+  <span class="ms-2 fw-bold ms-auto">Admin Kasir</span>
+</div>
+
             </nav>
 
             <!-- Bagian yang bisa discroll -->

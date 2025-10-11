@@ -89,7 +89,7 @@
         .btn-signin {
             width: 100%;
             height: 38px;
-            background-color: #67b6af;
+            background-color: #fece00;
             border: none;
             border-radius: 2px;
             color: white;
@@ -153,30 +153,47 @@
         }
 
         .signup-container a {
-            color: #67b6af;
+            color: #fece00;
             font-weight: 600;
             text-decoration: none;
             transition: color 0.2s ease;
         }
 
         .signup-container a:hover {
-            color: #4b938c;
+            color: #fece00;
             text-decoration: underline;
         }
 
         .signup-container a:focus {
-            outline: 2px solid #67b6af;
+            outline: 2px solid #fece00;
             outline-offset: 2px;
         }
+
+        .avatar-circle {
+        width: 100px;          /* atur sesuai keinginan */
+        height: 100px;
+        border-radius: 50%;    /* bikin lingkaran */
+        overflow: hidden;      /* potong gambar biar bulat */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f0f0f0;   /* warna latar fallback */
+        }
+
+        .avatar-circle img {
+        width: 100%;
+        height: 125%;
+        object-fit: cover;     /* gambar memenuhi lingkaran */
+        display: block;
+        }
+
     </style>
 </head>
 
 <body>
     <div class="login-container" role="main" aria-label="Member login form">
         <div class="avatar-circle" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path d="M12 12c2.209 0 4-1.791 4-4s-1.791-4-4-4-4 1.791-4 4 1.791 4 4 4zM12 14c-2.67 0-8 1.335-8 4v2h16v-2c0-2.665-5.33-4-8-4z" />
-            </svg>
+             <img src="storage/logo/logo.png" alt="User Avatar">
         </div>
         <h2 class="login-title">Admin Ashbab Coffee</h2>
         <form method="POST" action="{{ route('login') }}">
@@ -191,15 +208,6 @@
             </p>
             @endif
         </form>
-    </div>
-
-    <div class="bottom-left-container">
-        <button class="btn">
-            <i class="fas fa-shopping-cart"></i> Keranjang
-        </button>
-        <button class="btn">
-            <i class="fas fa-pen"></i> Catatan
-        </button>
     </div>
 
     <!-- <div class="signup-container">
