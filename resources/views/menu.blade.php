@@ -51,7 +51,7 @@
             background: #f4dfe3;
             border: none;
         }
-        
+
         .card-menu img {
             width: 100%;
             height: 140px;
@@ -123,7 +123,7 @@
             width: 70%;
             max-width: 300px;
             margin: 30px auto 10px;
-            opacity: .5;
+
         }
 
         .order-title {
@@ -218,8 +218,9 @@
         }
 
         .mini-img img {
-            width: 60%;
-            opacity: .5;
+            width: 90%;
+            height: 90%;
+            /* opacity: .5; */
         }
 
         .cart-item h6 {
@@ -394,9 +395,9 @@
                 <a class="nav-link" href="#">Beranda</a>
                 <a class="nav-link" href="#">Tentang</a>
             </div>
-           <a class="navbar-brand mx-auto" href="#">Ashbab Coffe
-                 <img src="{{ asset('storage/logo/logo.png') }}" alt="Ashbab Coffee" height="40">
-             </a>
+            <a class="navbar-brand mx-auto" href="#">Ashbab Coffe
+                <img src="{{ asset('storage/logo/logo.png') }}" alt="Ashbab Coffee" height="40">
+            </a>
         </div>
     </nav>
 
@@ -458,7 +459,8 @@
                         <button class="btn btn-tambah w-100 open-order"
                             data-name="{{ $menu->nama }}"
                             data-price="{{ $menu->harga }}"
-                            data-kategori="{{ $kategori }}">
+                            data-kategori="{{ $kategori }}"
+                            data-foto="{{ asset('storage/'.$menu->foto) }}">
                             <i class=""></i> Tambah
                         </button>
                     </div>
@@ -474,7 +476,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header p-0 flex-column">
-                    <img src="https://dummyimage.com/400x250/f4dfe3/ffffff&text=%F0%9F%8D%B5" class="order-img-placeholder" alt="img" />
+                    <img src="https://dummyimage.com/400x250/f4dfe3/ffffff&text=%F0%9F%8D%B5" class="order-foto order-img-placeholder" alt="img" />
                     <button type="button" class="close-btn" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div class="modal-body text-center pb-4">
@@ -599,7 +601,8 @@
             name: '',
             price: 0,
             qty: 1,
-            kategori: ''
+            kategori: '',
+            foto: ''
         };
         // let cart = [];
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -651,7 +654,9 @@
                 currentItem.price = parseInt(btn.dataset.price, 10);
                 currentItem.kategori = btn.dataset.kategori;
                 currentItem.qty = 1;
+                currentItem.foto = btn.dataset.foto;
                 orderModalEl.querySelector('.order-title').textContent = currentItem.name;
+                orderModalEl.querySelector('.order-foto').src = currentItem.foto;
                 qtyDisp.textContent = 1;
                 minusBtn.disabled = true;
                 buyTotal.textContent = currentItem.price.toLocaleString('id-ID');
@@ -753,7 +758,7 @@
                 const row = document.createElement('div');
                 row.className = 'cart-item';
                 row.innerHTML = `
-          <div class="mini-img"><img src='https://dummyimage.com/70x70/f4dfe3/ffffff&text=%F0%9F%8D%B5'></div>
+          <div class="mini-img"><img src=${item.foto}></div>
           <div class="flex-grow-1">
             <h6>${item.name}</h6>
             <div class="d-flex align-items-center gap-2 mb-1">
