@@ -106,9 +106,9 @@
 
     <!-- Daftar Makanan -->
     <div class="card">
-        <div class="card-header">
+        <!-- <div class="card-header">
             Daftar Makanan
-        </div>
+        </div> -->
         <div class="card-body">
 
             @if (session('error'))
@@ -257,7 +257,7 @@
             </table>
 
             {{-- Pagination kalau pakai paginate() --}}
-            {{ $makanans->links() }}
+            {{ $makanans->links('pagination::bootstrap-5') }}
 
         </div>
     </div>

@@ -258,7 +258,7 @@
             </table>
 
             {{-- Pagination kalau pakai paginate() --}}
-            {{ $minumans->links() }}
+            {{ $minumans->links('pagination::bootstrap-5') }}
 
         </div>
     </div>
