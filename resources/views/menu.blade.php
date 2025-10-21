@@ -392,8 +392,7 @@
     <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
         <div class="container-fluid px-4">
             <div class="d-flex gap-4 align-items-center flex-grow-1">
-                <a class="nav-link" href="#">Beranda</a>
-                <a class="nav-link" href="#">Tentang</a>
+                <a class="nav-link" href="#">Daftar Menu</a>
             </div>
             <a class="navbar-brand mx-auto" href="#">Ashbab Coffe
                 <img src="{{ asset('storage/logo/logo.png') }}" alt="Ashbab Coffee" height="40">
